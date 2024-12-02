@@ -47,6 +47,26 @@ so far.
 
 So - puzzle solved, onto the next star.
 
+# Day 2
+
+Slightly more fiddly today. Again the problem input is quite straightforward but the verfications
+are a little bit more involved.
+
+I used zipped lists for the processing - I'm not sure if that counts as a trick, but it's definitely
+a pattern that comes up in functional programming. 
+
+For part 2, slightly more interesting and some benefits in keeping the code a little organised. Although 
+everything is still tiny. Some interest in how you keep the various combinations straight in your head
+and how you model - definitely multiple otpions.
+
+Again, I'm not reaching for absolute speed, just a functionally correct version. 
+I'm seeing quite a few shortcuts that could be applied 
+at a low level, but it's not worth it a this level and for the size of the inputs. As far as a human can tell these solutions are
+instantaneous. Running through a list four or five times is acceptable.
+
+Interestingly I am already seeing bits and pieces that I might re-use over multiple days, and may factor out when
+time allows.
+
 # Standard Phoenix README follows...
 
 To start your Phoenix server:

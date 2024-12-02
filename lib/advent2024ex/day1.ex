@@ -1,4 +1,4 @@
-defmodule Advent2024Ex.Day1 do
+defmodule Advent2024ex.Day1 do
   defp file_lines(fname) do
     File.read!(fname) |> String.split("\n") |> Enum.map(&String.split(&1))
   end
