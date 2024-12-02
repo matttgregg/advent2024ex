@@ -35,3 +35,6 @@ advent2024ex-*.tar
 npm-debug.log
 /assets/node_modules/
 
+# Advent of code puzzle data
+/puzzle_data/
+
