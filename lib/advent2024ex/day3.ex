@@ -6,17 +6,17 @@ defmodule Advent2024ex.Day3 do
   end
 
   def match_mult_enabled(text) do
-    Regex.scan(~r{mul\((\d+),(\d+)\)|don't|do}, text)
+    Regex.scan(~r{mul\((\d+),(\d+)\)|don't\(\)|do\(\)}, text)
     |> accumulate_mult(true, 0)
   end
 
   defp accumulate_mult([next | rest], enabled, acc) do
     {n_enabled, n_acc} =
       case next do
-        ["don't"] ->
+        ["don't()"] ->
           {false, acc}
 
-        ["do"] ->
+        ["do()"] ->
           {true, acc}
 
         [_match, d1, d2] ->
