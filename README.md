@@ -67,6 +67,30 @@ instantaneous. Running through a list four or five times is acceptable.
 Interestingly I am already seeing bits and pieces that I might re-use over multiple days, and may factor out when
 time allows.
 
+# Day 3
+
+Still on the slight upwards difficulty curve.
+
+I quite like these pseudo-language type problems, although this one is abolutely the minimal version of this. I do mean
+to go back and do the intcode year fully at some point (I bailed about halfway through at the time as my interpreter became 
+unwieldy). Having gone through a bit of language design and even peeked into
+assembly, I've got a much better appreciation of that year now!
+
+Anyway, this day, interestingly, it's explixitly about finding patterns in junk text, so this is a day when I feel regex are
+the absolutely perfect tool here. The patterns are small and simple, so it works really well. I think was actually my fastest and
+shortest part one day so far, but partly because I've got my framework and basic tools set up now.
+
+Part 2 was fun, nicely makes the things a bit more complex but not too complex. Shout out to the Elixir `IO.inspect` function
+which allows for delightfully easy debugging of pipelines. This allowed me to instantly catch a little bug that I had with
+overlapping patterns.
+
+How to process 'these sorts of things'? I went for an ad-hoc stateful fold, which is direct and sould be efficient. I'm intrigued
+to look at other peoples solutions and see if there are more idiomatic ways of expressing the same idea.
+
+I'm also intrigued by how I'd do it in a streaming fashion. Absolutely not worthwhile in this puzzle, but would be interesting
+to do the whole problem in a single pass. That might be a bit more of a (simple) purpose built parser. Completely unnecessary for
+the puzzle solution, but might be interesting to code up if I have time. 
+
 # Standard Phoenix README follows...
 
 To start your Phoenix server:
