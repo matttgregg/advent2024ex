@@ -89,7 +89,25 @@ to look at other peoples solutions and see if there are more idiomatic ways of e
 
 I'm also intrigued by how I'd do it in a streaming fashion. Absolutely not worthwhile in this puzzle, but would be interesting
 to do the whole problem in a single pass. That might be a bit more of a (simple) purpose built parser. Completely unnecessary for
-the puzzle solution, but might be interesting to code up if I have time. 
+the puzzle solution, but might be interesting to code up if I have time.
+
+# Day 4
+
+A fun one today - some [non-trivial text scanning](https://adventofcode.com/2024/day/4).
+
+Firstly the good news - I decided to implement as a generic pattern matcher which I then applied
+across the grid of text. As a result, when the pattern to match changed in part 2 it was really, really easy to update.
+
+On the flip side, I completely forgot that the Elixir `List.get` function uses wraparound - i.e. `get(-1)` will
+get values from the *end* of the list. This is one of those features that is incredibly helpful a lot of the time, but will
+trip you up sometimes. Just one for me to be aware of, and remember for next time.
+
+As a result the chacks around the edge of the grid were wrappping around. (Word-search
+on a torus? Not going to catch on.) I am eternally grateful that the test case Eric provided this, and as a result was 
+able to scratch my head on an 19 versus 18 on the example, rather than on an unknwown error on several thousand. Thank you, 
+thank you, thank you for festive gifts.
+Given that I was wrapping my index lookups anyway (to avoid out of range at the top end), it was easy to correct.
+
 
 # Standard Phoenix README follows...
 

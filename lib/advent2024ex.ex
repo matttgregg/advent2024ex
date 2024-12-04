@@ -10,6 +10,7 @@ defmodule Advent2024ex do
     run_and_puts(1, &Advent2024ex.Day1.run/0)
     run_and_puts(2, &Advent2024ex.Day2.run/0)
     run_and_puts(3, &Advent2024ex.Day3.run/0)
+    run_and_puts(4, &Advent2024ex.Day4.run/0)
   end
 
   defp run_and_puts(day, f) do
