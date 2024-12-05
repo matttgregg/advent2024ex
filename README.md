@@ -108,6 +108,27 @@ able to scratch my head on an 19 versus 18 on the example, rather than on an unk
 thank you, thank you for festive gifts.
 Given that I was wrapping my index lookups anyway (to avoid out of range at the top end), it was easy to correct.
 
+# Day 5
+
+I enjoyed this one, maybe more than I should have. Some intersting [verification and sorting](https://adventofcode.com/2024/day/5).
+
+This one mostly boiled down to picking the right data structures, and not being too lazy - i.e. not
+just stuffing everything into lists. How slow would things be if just in lists? I'm not sure, maybe not
+unworkably slow given we're on day 5, but certainly not optimal.
+
+It's also one of those situations where it pays to be smart about the data structure, and not just take the data structure in
+the input. Here, the orders are all supplied as `a<b` - but in fact, depending on how you traverse the data, it can be more
+efficient to store as `b<a`. (Or at least use the `b`'s as the keys.) Either way there's a little bit of work to marry up
+your data strucutures with the algorithms. In larger scale projects I'd probably also be thinking about how representations
+interact - what's the 'canoncial' representation (if there is one), what's the scope of representations. (I've been burnt a few times!)
+This is however Advent of Code, so not something to worry about here.
+
+I did have an initial bug around treating a Map/Set as a list, which I needed some debug to catch. Agreed, a strongly typed language
+would probably have caught this, but it's often swings and roundabouts with type systems, so I didn't feel too aggrieved.
+
+Meanwhile, part 2 was again fairly quick because of the neatly structured code. It would definitely be painful in some languages
+but most modern languages allow sorts with custom comparisons, so this felt more a question of understanding your standard library
+and using it effectively. (However tempting it is to write a sort function from scratch.)
 
 # Standard Phoenix README follows...
 
