@@ -12,6 +12,16 @@ defmodule Advent2024ex.Day6 do
     File.read!(fname) |> String.split("\n") |> Enum.map(&String.to_charlist/1)
   end
 
+  def hashmap_from_map(m) do
+    for r <- 1..Enum.count(m) do
+      for c <- 1..Enum.count(Enum.at(m, r - 1)) do
+        {{r - 1, c - 1}, Enum.at(m, r - 1) |> Enum.at(c - 1)}
+      end
+    end
+    |> Enum.flat_map(fn x -> x end)
+    |> Map.new()
+  end
+
   defp guard_char(c) do
     case c do
       ?^ -> true
@@ -37,48 +47,42 @@ defmodule Advent2024ex.Day6 do
     {row, col}
   end
 
-  def do_step(m, {grow, gcol}, gchar, steps) do
+  def do_step(hm, {grow, gcol}, gchar, steps) do
     {srow, scol} = dir_from_char(gchar)
     {nrow, ncol} = {grow + srow, gcol + scol}
 
     # Is this outside the map? Finish and return the step count.
-    if nrow < 0 || ncol < 0 || nrow >= Enum.count(m) ||
-         ncol >= Enum.at(m, nrow) |> Enum.count() do
+    if !Map.has_key?(hm, {nrow, ncol}) do
       steps
     else
-      nchar = Enum.at(m, nrow) |> Enum.at(ncol)
+      nchar = Map.get(hm, {nrow, ncol})
 
       cond do
         nchar == ?# ->
           # This is an obstacle? Turn and try again.
-          do_step(m, {grow, gcol}, guard_turn(gchar), steps)
+          do_step(hm, {grow, gcol}, guard_turn(gchar), steps)
 
         nchar == ?X || guard_char(nchar) ->
           # This a visited square? Move and keep going.
-          do_step(m, {nrow, ncol}, gchar, steps)
+          do_step(hm, {nrow, ncol}, gchar, steps)
 
         true ->
           # This an univisited square? Increment, update the map, move and keep going.
-          old_row = Enum.at(m, nrow)
-          new_row = List.replace_at(old_row, ncol, ?X)
-          new_m = List.replace_at(m, nrow, new_row)
-          # IO.puts(Enum.join(new_m, "\n"))
-          do_step(new_m, {nrow, ncol}, gchar, steps + 1)
+          do_step(Map.put(hm, {nrow, ncol}, ?X), {nrow, ncol}, gchar, steps + 1)
       end
     end
   end
 
-  def find_path(m, {grow, gcol}, gchar, path) do
+  def find_path(hm, {grow, gcol}, gchar, path) do
     {srow, scol} = dir_from_char(gchar)
     {nrow, ncol} = {grow + srow, gcol + scol}
     npath = Map.put(path, {grow, gcol, gchar}, true)
 
     # Is this outside the map? Finish and return the step count.
-    if nrow < 0 || ncol < 0 || nrow >= Enum.count(m) ||
-         ncol >= Enum.at(m, nrow) |> Enum.count() do
+    if !Map.has_key?(hm, {nrow, ncol}) do
       {:left, Map.keys(npath) |> Enum.map(fn {r, c, _c} -> {r, c} end) |> Enum.uniq()}
     else
-      nchar = Enum.at(m, nrow) |> Enum.at(ncol)
+      nchar = Map.get(hm, {nrow, ncol})
 
       cond do
         Map.has_key?(path, {grow, gcol, gchar}) ->
@@ -87,19 +91,15 @@ defmodule Advent2024ex.Day6 do
 
         nchar == ?# ->
           # This is an obstacle? Turn and try again.
-          find_path(m, {grow, gcol}, guard_turn(gchar), npath)
+          find_path(hm, {grow, gcol}, guard_turn(gchar), npath)
 
         nchar == ?X || guard_char(nchar) ->
           # This a visited square? Move and keep going.
-          find_path(m, {nrow, ncol}, gchar, npath)
+          find_path(hm, {nrow, ncol}, gchar, npath)
 
         true ->
           # This an univisited square? Increment, update the map, move and keep going.
-          old_row = Enum.at(m, nrow)
-          new_row = List.replace_at(old_row, ncol, ?X)
-          new_m = List.replace_at(m, nrow, new_row)
-          # IO.puts(Enum.join(new_m, "\n"))
-          find_path(new_m, {nrow, ncol}, gchar, npath)
+          find_path(Map.put(hm, {nrow, ncol}, ?X), {nrow, ncol}, gchar, npath)
       end
     end
   end
@@ -108,29 +108,27 @@ defmodule Advent2024ex.Day6 do
     m = map_from_file(fname)
     {grow, gcol} = find_guard(m)
     gchar = Enum.at(m, grow) |> Enum.at(gcol)
-    do_step(m, {grow, gcol}, gchar, 1)
+    hm = hashmap_from_map(m)
+    do_step(hm, {grow, gcol}, gchar, 1)
   end
 
   def make_loops(fname) do
     m = map_from_file(fname)
     {grow, gcol} = find_guard(m)
     gchar = Enum.at(m, grow) |> Enum.at(gcol)
-    {:left, steps} = find_path(m, {grow, gcol}, gchar, %{})
+    hm = hashmap_from_map(m)
+    {:left, steps} = find_path(hm, {grow, gcol}, gchar, %{})
 
     # Now, try inserting obstacles at each path point in turn to see if that causes a loop
-    Enum.count(steps, &makes_loop?(m, {grow, gcol}, gchar, &1))
+    Enum.count(steps, &makes_loop?(hm, {grow, gcol}, gchar, &1))
   end
 
-  defp makes_loop?(m, {grow, gcol}, gchar, {orow, ocol}) do
+  defp makes_loop?(hm, {grow, gcol}, gchar, {orow, ocol}) do
     if orow == grow && ocol == gcol do
       # We can't put an obstacle where the guard is.
       false
     else
-      old_row = Enum.at(m, orow)
-      new_row = List.replace_at(old_row, ocol, ?#)
-      new_m = List.replace_at(m, orow, new_row)
-
-      case find_path(new_m, {grow, gcol}, gchar, %{}) do
+      case find_path(Map.put(hm, {orow, ocol}, ?#), {grow, gcol}, gchar, %{}) do
         {:left, _} ->
           false
 
