@@ -32,12 +32,12 @@ defmodule Advent2024ex.Day6 do
     end
   end
 
-  defp guard_turn(c) do
-    case c do
-      ?^ -> ?>
-      ?> -> ?v
-      ?< -> ?^
-      ?v -> ?<
+  defp guard_turn(dir) do
+    case dir do
+      {-1, 0} -> {0, 1}
+      {0, 1} -> {1, 0}
+      {1, 0} -> {0, -1}
+      {0, -1} -> {-1, 0}
     end
   end
 
@@ -47,29 +47,90 @@ defmodule Advent2024ex.Day6 do
     {row, col}
   end
 
-  def find_path(hm, {grow, gcol}, gchar, path) do
-    {srow, scol} = dir_from_char(gchar)
+  def find_path(hm, {grow, gcol}, {srow, scol} = gdir, path) do
     {nrow, ncol} = {grow + srow, gcol + scol}
-    npath = Map.put(path, {grow, gcol, gchar}, true)
+    npath = Map.put(path, {grow, gcol, gdir}, true)
 
     # Is this outside the map? Finish and return the step count.
     if !Map.has_key?(hm, {nrow, ncol}) do
-      {:left, Map.keys(npath) |> Enum.map(fn {r, c, _c} -> {r, c} end) |> Enum.uniq()}
+      {:left, npath}
     else
       nchar = Map.get(hm, {nrow, ncol})
 
       cond do
-        Map.has_key?(path, {grow, gcol, gchar}) ->
+        Map.has_key?(path, {grow, gcol, gdir}) ->
           # We've looped
           {:loop}
 
         nchar == ?# ->
           # This is an obstacle? Turn and try again.
-          find_path(hm, {grow, gcol}, guard_turn(gchar), npath)
+          find_path(hm, {grow, gcol}, guard_turn(gdir), npath)
 
         true ->
           # This an univisited square? Increment, update the map, move and keep going.
-          find_path(hm, {nrow, ncol}, gchar, npath)
+          find_path(hm, {nrow, ncol}, gdir, npath)
+      end
+    end
+  end
+
+  def find_path_with_obstacles(hm, {grow, gcol}, {srow, scol} = gdir, path, loop_count, obstacles) do
+    {nrow, ncol} = {grow + srow, gcol + scol}
+    npath = Map.put(path, {grow, gcol, gdir}, true)
+
+    # Is this outside the map? Finish and return the loop count.
+    if !Map.has_key?(hm, {nrow, ncol}) do
+      loop_count
+    else
+      nchar = Map.get(hm, {nrow, ncol})
+
+      cond do
+        Map.has_key?(path, {grow, gcol, gdir}) ->
+          # We've looped
+          loop_count
+
+        nchar == ?# ->
+          # This is an obstacle? Turn and try again.
+          find_path_with_obstacles(
+            hm,
+            {grow, gcol},
+            guard_turn(gdir),
+            npath,
+            loop_count,
+            obstacles
+          )
+
+        Map.has_key?(obstacles, {nrow, ncol}) ->
+          # We've already tried an obstacle here - just keep going on the main path.
+          find_path_with_obstacles(
+            hm,
+            {nrow, ncol},
+            gdir,
+            npath,
+            loop_count,
+            obstacles
+          )
+
+        true ->
+          # This an unvisited square? Try pretending it's an obstacle and see what happens?
+
+          makes_loop =
+            case find_path(Map.put(hm, {nrow, ncol}, ?#), {grow, gcol}, gdir, path) do
+              {:loop} ->
+                1
+
+              _ ->
+                0
+            end
+
+          # Now we've checked, keep going with the main path.
+          find_path_with_obstacles(
+            hm,
+            {nrow, ncol},
+            gdir,
+            npath,
+            loop_count + makes_loop,
+            Map.put(obstacles, {nrow, ncol}, true)
+          )
       end
     end
   end
@@ -77,36 +138,18 @@ defmodule Advent2024ex.Day6 do
   def count_steps(fname) do
     m = map_from_file(fname)
     {grow, gcol} = find_guard(m)
-    gchar = Enum.at(m, grow) |> Enum.at(gcol)
+    gdir = Enum.at(m, grow) |> Enum.at(gcol) |> dir_from_char()
     hm = hashmap_from_map(m)
-    {:left, steps} = find_path(hm, {grow, gcol}, gchar, %{})
-    Enum.count(steps)
+    {:left, path} = find_path(hm, {grow, gcol}, gdir, %{})
+    Map.keys(path) |> Enum.map(fn {r, c, _c} -> {r, c} end) |> Enum.uniq() |> Enum.count()
   end
 
   def make_loops(fname) do
     m = map_from_file(fname)
     {grow, gcol} = find_guard(m)
-    gchar = Enum.at(m, grow) |> Enum.at(gcol)
+    gdir = Enum.at(m, grow) |> Enum.at(gcol) |> dir_from_char()
     hm = hashmap_from_map(m)
-    {:left, steps} = find_path(hm, {grow, gcol}, gchar, %{})
-
-    # Now, try inserting obstacles at each path point in turn to see if that causes a loop
-    Enum.count(steps, &makes_loop?(hm, {grow, gcol}, gchar, &1))
-  end
-
-  defp makes_loop?(hm, {grow, gcol}, gchar, {orow, ocol}) do
-    if orow == grow && ocol == gcol do
-      # We can't put an obstacle where the guard is.
-      false
-    else
-      case find_path(Map.put(hm, {orow, ocol}, ?#), {grow, gcol}, gchar, %{}) do
-        {:left, _} ->
-          false
-
-        {:loop} ->
-          true
-      end
-    end
+    find_path_with_obstacles(hm, {grow, gcol}, gdir, %{}, 0, %{})
   end
 
   def run(test \\ false) do
