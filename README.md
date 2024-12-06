@@ -130,6 +130,23 @@ Meanwhile, part 2 was again fairly quick because of the neatly structured code. 
 but most modern languages allow sorts with custom comparisons, so this felt more a question of understanding your standard library
 and using it effectively. (However tempting it is to write a sort function from scratch.)
 
+# Day 6
+
+Today we hit the first of [simulate an agent with rules](https://adventofcode.com/2024/day/6) type puzzle. Or evolving system
+as it breaks down to. In later days this can be a lot more complex, with complex evolution rules - e.g. for maybe multiple agents, but
+as we're still in single figure days the evolution is fairly simple.
+
+This type of thing is largely about keeping the rules straight, simple, and testing as much as possible. Particularly in the more naive
+step-by-step implementations - which I used.
+The second part of the puzzle is very interesting, as we now need to try adding obstacles into the map. The only (slightly) smart thing 
+I did was to only add obstacles to the guards path - they're the only one that will matter - rather than add obstacles all over the map.
+Keeping track of the path is one way of tracking loops.
+
+My final solution  - is OK. It runs in under 10 seconds. My hunch is that the best performance improvement would be to use
+mutable arrays, rather than relying on hash maps. That's not quite so natural in Elixir, but I'd probably try in Rust or C or go.
+
+So, calling it here - off to look at others solutions to see if there are smart algorithms!
+
 # Standard Phoenix README follows...
 
 To start your Phoenix server:

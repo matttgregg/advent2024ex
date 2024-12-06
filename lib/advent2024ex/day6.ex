@@ -47,32 +47,6 @@ defmodule Advent2024ex.Day6 do
     {row, col}
   end
 
-  def do_step(hm, {grow, gcol}, gchar, steps) do
-    {srow, scol} = dir_from_char(gchar)
-    {nrow, ncol} = {grow + srow, gcol + scol}
-
-    # Is this outside the map? Finish and return the step count.
-    if !Map.has_key?(hm, {nrow, ncol}) do
-      steps
-    else
-      nchar = Map.get(hm, {nrow, ncol})
-
-      cond do
-        nchar == ?# ->
-          # This is an obstacle? Turn and try again.
-          do_step(hm, {grow, gcol}, guard_turn(gchar), steps)
-
-        nchar == ?X || guard_char(nchar) ->
-          # This a visited square? Move and keep going.
-          do_step(hm, {nrow, ncol}, gchar, steps)
-
-        true ->
-          # This an univisited square? Increment, update the map, move and keep going.
-          do_step(Map.put(hm, {nrow, ncol}, ?X), {nrow, ncol}, gchar, steps + 1)
-      end
-    end
-  end
-
   def find_path(hm, {grow, gcol}, gchar, path) do
     {srow, scol} = dir_from_char(gchar)
     {nrow, ncol} = {grow + srow, gcol + scol}
@@ -93,13 +67,9 @@ defmodule Advent2024ex.Day6 do
           # This is an obstacle? Turn and try again.
           find_path(hm, {grow, gcol}, guard_turn(gchar), npath)
 
-        nchar == ?X || guard_char(nchar) ->
-          # This a visited square? Move and keep going.
-          find_path(hm, {nrow, ncol}, gchar, npath)
-
         true ->
           # This an univisited square? Increment, update the map, move and keep going.
-          find_path(Map.put(hm, {nrow, ncol}, ?X), {nrow, ncol}, gchar, npath)
+          find_path(hm, {nrow, ncol}, gchar, npath)
       end
     end
   end
@@ -109,7 +79,8 @@ defmodule Advent2024ex.Day6 do
     {grow, gcol} = find_guard(m)
     gchar = Enum.at(m, grow) |> Enum.at(gcol)
     hm = hashmap_from_map(m)
-    do_step(hm, {grow, gcol}, gchar, 1)
+    {:left, steps} = find_path(hm, {grow, gcol}, gchar, %{})
+    Enum.count(steps)
   end
 
   def make_loops(fname) do
