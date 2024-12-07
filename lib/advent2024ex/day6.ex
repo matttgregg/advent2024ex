@@ -47,57 +47,69 @@ defmodule Advent2024ex.Day6 do
     {row, col}
   end
 
-  def find_path(hm, {grow, gcol}, {srow, scol} = gdir, path) do
+  def find_path(hm, {grow, gcol}, {srow, scol} = gdir, path, plength, {rows, cols} = bounds) do
     {nrow, ncol} = {grow + srow, gcol + scol}
-    npath = Map.put(path, {grow, gcol, gdir}, true)
 
     # Is this outside the map? Finish and return the step count.
-    if !Map.has_key?(hm, {nrow, ncol}) do
-      {:left, npath}
+    if nrow < 0 || nrow >= rows || ncol < 0 || ncol >= cols do
+      {:left, plength}
     else
       nchar = Map.get(hm, {nrow, ncol})
 
       cond do
-        Map.has_key?(path, {grow, gcol, gdir}) ->
-          # We've looped
-          {:loop}
-
         nchar == ?# ->
-          # This is an obstacle? Turn and try again.
-          find_path(hm, {grow, gcol}, guard_turn(gdir), npath)
+          if Map.has_key?(path, {grow, gcol, gdir}) do
+            # We've looped
+            {:loop}
+          else
+            # This is an obstacle? Turn and try again.
+            npath = Map.put(path, {grow, gcol, gdir}, true)
+            find_path(hm, {grow, gcol}, guard_turn(gdir), npath, plength, bounds)
+          end
 
         true ->
           # This an univisited square? Increment, update the map, move and keep going.
-          find_path(hm, {nrow, ncol}, gdir, npath)
+          find_path(hm, {nrow, ncol}, gdir, path, plength + 1, bounds)
       end
     end
   end
 
-  def find_path_with_obstacles(hm, {grow, gcol}, {srow, scol} = gdir, path, loop_count, obstacles) do
+  def find_path_with_obstacles(
+        hm,
+        {grow, gcol},
+        {srow, scol} = gdir,
+        path,
+        loop_count,
+        obstacles,
+        {rows, cols} = bounds
+      ) do
     {nrow, ncol} = {grow + srow, gcol + scol}
-    npath = Map.put(path, {grow, gcol, gdir}, true)
 
     # Is this outside the map? Finish and return the loop count.
-    if !Map.has_key?(hm, {nrow, ncol}) do
+    if nrow < 0 || nrow >= rows || ncol < 0 || ncol >= cols do
       loop_count
     else
       nchar = Map.get(hm, {nrow, ncol})
 
       cond do
-        Map.has_key?(path, {grow, gcol, gdir}) ->
-          # We've looped
-          loop_count
-
         nchar == ?# ->
-          # This is an obstacle? Turn and try again.
-          find_path_with_obstacles(
-            hm,
-            {grow, gcol},
-            guard_turn(gdir),
-            npath,
-            loop_count,
-            obstacles
-          )
+          if Map.has_key?(path, {grow, gcol, gdir}) do
+            # We've looped
+            {:loop}
+          else
+            # This is an obstacle? Turn and try again.
+            npath = Map.put(path, {grow, gcol, gdir}, true)
+
+            find_path_with_obstacles(
+              hm,
+              {grow, gcol},
+              guard_turn(gdir),
+              npath,
+              loop_count,
+              obstacles,
+              bounds
+            )
+          end
 
         Map.has_key?(obstacles, {nrow, ncol}) ->
           # We've already tried an obstacle here - just keep going on the main path.
@@ -105,16 +117,17 @@ defmodule Advent2024ex.Day6 do
             hm,
             {nrow, ncol},
             gdir,
-            npath,
+            path,
             loop_count,
-            obstacles
+            obstacles,
+            bounds
           )
 
         true ->
           # This an unvisited square? Try pretending it's an obstacle and see what happens?
 
           makes_loop =
-            case find_path(Map.put(hm, {nrow, ncol}, ?#), {grow, gcol}, gdir, path) do
+            case find_path(Map.put(hm, {nrow, ncol}, ?#), {grow, gcol}, gdir, path, 0, bounds) do
               {:loop} ->
                 1
 
@@ -127,12 +140,19 @@ defmodule Advent2024ex.Day6 do
             hm,
             {nrow, ncol},
             gdir,
-            npath,
+            path,
             loop_count + makes_loop,
-            Map.put(obstacles, {nrow, ncol}, true)
+            Map.put(obstacles, {nrow, ncol}, true),
+            bounds
           )
       end
     end
+  end
+
+  def get_bounds(m) do
+    rows = Enum.count(m)
+    cols = Enum.map(m, &Enum.count/1) |> Enum.max()
+    {rows, cols}
   end
 
   def count_steps(fname) do
@@ -140,8 +160,9 @@ defmodule Advent2024ex.Day6 do
     {grow, gcol} = find_guard(m)
     gdir = Enum.at(m, grow) |> Enum.at(gcol) |> dir_from_char()
     hm = hashmap_from_map(m)
-    {:left, path} = find_path(hm, {grow, gcol}, gdir, %{})
-    Map.keys(path) |> Enum.map(fn {r, c, _c} -> {r, c} end) |> Enum.uniq() |> Enum.count()
+    bounds = get_bounds(m)
+    {:left, plength} = find_path(hm, {grow, gcol}, gdir, %{}, 0, bounds)
+    plength
   end
 
   def make_loops(fname) do
@@ -149,7 +170,8 @@ defmodule Advent2024ex.Day6 do
     {grow, gcol} = find_guard(m)
     gdir = Enum.at(m, grow) |> Enum.at(gcol) |> dir_from_char()
     hm = hashmap_from_map(m)
-    find_path_with_obstacles(hm, {grow, gcol}, gdir, %{}, 0, %{})
+    bounds = get_bounds(m)
+    find_path_with_obstacles(hm, {grow, gcol}, gdir, %{}, 0, %{}, bounds)
   end
 
   def run(test \\ false) do
