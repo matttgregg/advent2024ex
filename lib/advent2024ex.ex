@@ -14,11 +14,16 @@ defmodule Advent2024ex do
     run_and_puts(4, &Advent2024ex.Day4.run/0)
     run_and_puts(5, &Advent2024ex.Day5.run/0)
     run_and_puts(6, &Advent2024ex.Day6.run/0)
+    run_and_puts(7, &Advent2024ex.Day7.run/0)
     tend = Time.utc_now()
     IO.puts("Completed in #{Time.diff(tend, tstart, :millisecond)} ms")
   end
 
   defp run_and_puts(day, f) do
     IO.puts("Day#{day} : #{Enum.join(f.(), " and ")}")
+  end
+
+  def file_for(day, test \\ false) do
+    "./puzzle_data/day#{day}#{if test, do: ".tst"}"
   end
 end

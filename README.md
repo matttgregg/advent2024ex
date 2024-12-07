@@ -156,6 +156,21 @@ OK, ended up doing a fair few tweaks to pull down the timing of part 2. Mainly c
 
 I also put in some basic timing output in my full run. With all this done I'm now completing the first 6 days in under 0.4 seconds. (Although almost all of that time is spent in Day 6.) This seems perfectly reasonable with people describing C, and Rust solutions running in tenths of a second. I think, probably the biggest improvement would be to use an array type data structure rather than hash-map or list lookups, but I think I'm probably scraping the barrel on Elixir solutions at this point. The tweaks are all in the sane but practical lavel with decent payoff, and if I can get the whole 24 puzzle set running in under a second I'll be quite happy.
 
+# Day 7
+
+This was interesting, a mixture of things we've seen [non-standard string processing and potentially large search space](https://adventofcode.com/2024/day/7). 
+
+To be honest, I found this simpler than yesterday, my only real slip was not reading the question properly and only *counting* the 
+lines that worked, rather than summing the target values. Otherwise, once fixed everything worked first time.
+
+A few things that I worried could have come up but didn't - one was that the test space would become too large too quickly. The other
+was that there would be integer overflows. However, I noticed that calculations always get bigger - as a result, it's very easy to
+ditch calculation paths which might get too big early. I'm not sure if this saved me from both of those potential problems.
+Update: I checked - no real problem. Slightly slower (fractions of a second) but nothing significant. BUT (optimised or not) I would be failing if using 32 bit integers. It looks like Elixir automatically defaults to arbitirary precision integers, and so 
+
+Today was nice, fitted in with some things that I knew, and didn't take me too long - which was lucky as I was travelling today. For people
+having problems, I guess I'd say to  try and keep things simple on this one, and worry about integer limits if necessary.
+
 # Standard Phoenix README follows...
 
 To start your Phoenix server:
