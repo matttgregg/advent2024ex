@@ -147,6 +147,15 @@ mutable arrays, rather than relying on hash maps. That's not quite so natural in
 
 So, calling it here - off to look at others solutions to see if there are smart algorithms!
 
+Edit 1:
+OK, ended up doing a fair few tweaks to pull down the timing of part 2. Mainly covered:
+* Precalculate as much as possible, avoid any unnecessary lookups. This covers the bounds, the guard char (never use the char again, use coord offsets directly).
+* Update as little as possible. No need to update the map itself (with Xs), just track exactly what's needed like the path turning and turn points.
+* Don't use lists - use a hash map for coordinate tiles.
+* Do the experimental obstacle placements while walking the initial path - this avoids each test path starting from scratch again.
+
+I also put in some basic timing output in my full run. With all this done I'm now completing the first 6 days in under 0.4 seconds. (Although almost all of that time is spent in Day 6.) This seems perfectly reasonable with people describing C, and Rust solutions running in tenths of a second. I think, probably the biggest improvement would be to use an array type data structure rather than hash-map or list lookups, but I think I'm probably scraping the barrel on Elixir solutions at this point. The tweaks are all in the sane but practical lavel with decent payoff, and if I can get the whole 24 puzzle set running in under a second I'll be quite happy.
+
 # Standard Phoenix README follows...
 
 To start your Phoenix server:
