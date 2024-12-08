@@ -171,6 +171,33 @@ Update: I checked - no real problem. Slightly slower (fractions of a second) but
 Today was nice, fitted in with some things that I knew, and didn't take me too long - which was lucky as I was travelling today. For people
 having problems, I guess I'd say to  try and keep things simple on this one, and worry about integer limits if necessary.
 
+# Day 8
+
+[More grids!](https://adventofcode.com/2024/day/8) But this time more geometric processing than time evolution.
+
+Today felt like a very neat 'keep everything organised, don't confuse yourself' type problem. I broke it neatly into:
+
+* Read the data, work out the bounds.
+* Work out all the antennae, store by 'frequency'.
+* For each frequency of antennae, for each pair work out all the node points.
+* Sort node points, drop any out of range, pick unique ones.
+
+And then part 2 is changing your node function - using an anonymous function Elixir makes it very pleasant just to swap in
+a different function depending on the day. Yes there's a double loop, but you genuinely need to collect all of those points.
+
+Things to watch for - off by one errors, getting mixed up, sub-optimal data structures. The geometry for calculating the points
+is a bit fiddly - if you've seen it before it's fairly quick to know what sort of thing this will look like, otherwise it's a bit of a 
+pencil and paper job. Same with working out how to count 'just enough' nodes in the second part. (I'll admit, I actually fudged it here
+and probably went a little outside the grid - but I'm filtering those out afterwards anyway.)
+
+Updated my global runner to get more timing data on each day individually - currently Day 7 is topping out for me at about a third of 
+a second. The first eight days coming in at about 0.8 seconds. Not amazing, but perfectly fine in Elixir withoug excess tuning.
+
+Intriguingly the reddit community points out that you can drastically improve Day 7 by working backwards - the reason being that 
+you know that you have to always have an integer value, so the places where a 'divide' is a valid operation (or `un-||`) are a lot rarer, and as a result the explorable potential-operators space is cut down a lot quicker. I haven't just done it because I can see there's a little fiddliness in inverting the operators properly. I may try if I have time.
+
+We're a third of the way through AoC!
+
 # Standard Phoenix README follows...
 
 To start your Phoenix server:
