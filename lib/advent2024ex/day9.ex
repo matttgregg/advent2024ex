@@ -108,55 +108,26 @@ defmodule Advent2024ex.Day9 do
     dm
   end
 
-  def compress_map(dm, [to_fit | rst]) do
-    move_from = Enum.find_index(dm, fn x -> x == to_fit end)
+  def compress_map(dm, [{_, size} = el | rst]) do
+    move_from = Enum.find_index(dm, fn x -> x == el end)
 
-    case to_fit do
-      {:space, _} ->
-        # Don't try to move spaces
-        compress_map(dm, rst)
+    # See if there's a space that can take it
+    if (move_to = Enum.find_index(dm, &fits(&1, el))) && move_to < move_from do
+      # We don't care about closing gaps - nothing after will get moved.
+      dm_with_space = List.replace_at(dm, move_from, {:space, size})
 
-      {_id, size} = el ->
-        # See if there's a space that can take it
-        if (move_to = Enum.find_index(dm, &fits(&1, el))) && move_to < move_from do
-          dm_with_space =
-            case {Enum.at(dm, move_from - 1), Enum.at(dm, move_from + 1)} do
-              {{:space, sa}, {:space, sb}} ->
-                List.replace_at(dm, move_from - 1, {:space, size + sa + sb})
-                |> List.delete_at(move_from)
-                |> List.delete_at(move_from)
+      {:space, gap_size} = Enum.at(dm, move_to)
 
-              {{:space, sn}, _} ->
-                List.replace_at(dm, move_from - 1, {:space, sn + size})
-                |> List.delete_at(move_from)
+      # The existing space is shrunk
+      new_dm =
+        dm_with_space
+        |> List.replace_at(move_to, {:space, gap_size - size})
+        |> List.insert_at(move_to, el)
 
-              {_, {:space, sn}} ->
-                List.replace_at(dm, move_from + 1, {:space, sn + size})
-                |> List.delete_at(move_from)
-
-              _ ->
-                List.replace_at(dm, move_from, {:space, size})
-            end
-
-          {:space, gap_size} = Enum.at(dm, move_to)
-
-          new_dm =
-            if gap_size > size do
-              # The existing space is shrunk
-              dm_with_space
-              |> List.replace_at(move_to, {:space, gap_size - size})
-              |> List.insert_at(move_to, el)
-            else
-              # The space is completely replaced.
-              dm_with_space
-              |> List.replace_at(move_to, el)
-            end
-
-          compress_map(new_dm, rst)
-        else
-          # We can't move this element - just leave it on the end and keep going.
-          compress_map(dm, rst)
-        end
+      compress_map(new_dm, rst)
+    else
+      # We can't move this element - just leave it on the end and keep going.
+      compress_map(dm, rst)
     end
   end
 
@@ -185,10 +156,6 @@ defmodule Advent2024ex.Day9 do
 
   def evaluate_dm([{:space, n} | rest], i, acc) do
     evaluate_dm(rest, i + n, acc)
-  end
-
-  def test2(data) do
-    load_and_compress(data) |> debug_dmap()
   end
 
   def run(test \\ false) do

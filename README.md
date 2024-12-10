@@ -29,7 +29,7 @@ get something working quickly.
 If I was absolutely looking to do the puzzles as quickly as possible in Elixir, I'd probably be looking at
 LiveBook - maybe I will end up doing some in LiveBook, it's a great technology!
 
-# Day 1
+# [Day 1](https://adventofcode.com/2024/day/1)
 
 As expected, things start of relatively simple with some basic text processing.
 
@@ -47,7 +47,7 @@ so far.
 
 So - puzzle solved, onto the next star.
 
-# Day 2
+# [Day 2](https://adventofcode.com/2024/day/2)
 
 Slightly more fiddly today. Again the problem input is quite straightforward but the verfications
 are a little bit more involved.
@@ -67,7 +67,7 @@ instantaneous. Running through a list four or five times is acceptable.
 Interestingly I am already seeing bits and pieces that I might re-use over multiple days, and may factor out when
 time allows.
 
-# Day 3
+# [Day 3](https://adventofcode.com/2024/day/3)
 
 Still on the slight upwards difficulty curve.
 
@@ -91,7 +91,7 @@ I'm also intrigued by how I'd do it in a streaming fashion. Absolutely not worth
 to do the whole problem in a single pass. That might be a bit more of a (simple) purpose built parser. Completely unnecessary for
 the puzzle solution, but might be interesting to code up if I have time.
 
-# Day 4
+# [Day 4](https://adventofcode.com/2024/day/4)
 
 A fun one today - some [non-trivial text scanning](https://adventofcode.com/2024/day/4).
 
@@ -108,7 +108,7 @@ able to scratch my head on an 19 versus 18 on the example, rather than on an unk
 thank you, thank you for festive gifts.
 Given that I was wrapping my index lookups anyway (to avoid out of range at the top end), it was easy to correct.
 
-# Day 5
+# [Day 5](https://adventofcode.com/2024/day/5)
 
 I enjoyed this one, maybe more than I should have. Some intersting [verification and sorting](https://adventofcode.com/2024/day/5).
 
@@ -130,7 +130,7 @@ Meanwhile, part 2 was again fairly quick because of the neatly structured code. 
 but most modern languages allow sorts with custom comparisons, so this felt more a question of understanding your standard library
 and using it effectively. (However tempting it is to write a sort function from scratch.)
 
-# Day 6
+# [Day 6](https://adventofcode.com/2024/day/6)
 
 Today we hit the first of [simulate an agent with rules](https://adventofcode.com/2024/day/6) type puzzle. Or evolving system
 as it breaks down to. In later days this can be a lot more complex, with complex evolution rules - e.g. for maybe multiple agents, but
@@ -156,7 +156,7 @@ OK, ended up doing a fair few tweaks to pull down the timing of part 2. Mainly c
 
 I also put in some basic timing output in my full run. With all this done I'm now completing the first 6 days in under 0.4 seconds. (Although almost all of that time is spent in Day 6.) This seems perfectly reasonable with people describing C, and Rust solutions running in tenths of a second. I think, probably the biggest improvement would be to use an array type data structure rather than hash-map or list lookups, but I think I'm probably scraping the barrel on Elixir solutions at this point. The tweaks are all in the sane but practical lavel with decent payoff, and if I can get the whole 24 puzzle set running in under a second I'll be quite happy.
 
-# Day 7
+# [Day 7](https://adventofcode.com/2024/day/7)
 
 This was interesting, a mixture of things we've seen [non-standard string processing and potentially large search space](https://adventofcode.com/2024/day/7). 
 
@@ -171,7 +171,7 @@ Update: I checked - no real problem. Slightly slower (fractions of a second) but
 Today was nice, fitted in with some things that I knew, and didn't take me too long - which was lucky as I was travelling today. For people
 having problems, I guess I'd say to  try and keep things simple on this one, and worry about integer limits if necessary.
 
-# Day 8
+# [Day 8](https://adventofcode.com/2024/day/8)
 
 [More grids!](https://adventofcode.com/2024/day/8) But this time more geometric processing than time evolution.
 
@@ -197,6 +197,39 @@ Intriguingly the reddit community points out that you can drastically improve Da
 you know that you have to always have an integer value, so the places where a 'divide' is a valid operation (or `un-||`) are a lot rarer, and as a result the explorable potential-operators space is cut down a lot quicker. I haven't just done it because I can see there's a little fiddliness in inverting the operators properly. I may try if I have time.
 
 We're a third of the way through AoC!
+
+# [Day 9](https://adventofcode.com/2024/day/9)
+
+It _seems_ simple - but [this was the first problem](https://adventofcode.com/2024/day/9) that I had to walk away from and come back t later. Annoyingly I'm not 100% sure what my original bug was or how I fixed, which problems inidcates over complication somewhere.
+
+The first part was fine - there's a lot to keep track of, but a simple walk from front to back pays off quickly and neatly. However:
+
+* This really didn't work well for part 2. While for pat 1 I was consuming spaces as I found them, in part 2 you don't know what's going to fill the space - it might not be from the back. As a result, I reused very little code, besides simple parsing.
+* Still tried to do in a forward pass initially - still didn't work as it's essential moves are tried with maximum magnitude first.
+* Didn't have optmised data structures, so my part 2 was running in seconds rather than milliseconds. I decided I could live with it until I got a correct answer.
+* Got the wrong answer on test data, realised I wasn't leaving a gap when I moved data.
+* Realised I was sometimes pushing data *later* on the disk.
+* Finally got the right answer to test data, but too low for actual data.
+* Fiddled with debug, but didn't see anything obvious.
+* Went down a rabbit hole of ensuring I combined neighbouring spaces, deleted 'empty' spaces - but it doesn't really matter.
+* Went through various refactorings to see what broke and gave me ideas - nothing really.
+* Went on reddit, seemed to have escaped all the corner cases people were highlighting. (Moving blocks twice, etc.)
+* Noticed that my test answer was still right, but the solution was *slightly* different. Plugged it in and passed!
+
+So, overally not a great day - I think the strategy was fine, but obviously got a bit snow blind at some point. Annoyingly no blinding insights on what went wrong!
+
+Either way, these were mainly my problems. The puzzle itself was quite interesting with enough fiddly details that it was non-trivial. Fingers crossed I'm a bit more awake tomorrow!
+
+# [Day 10](https://adventofcode.com/2024/day/10)
+
+From the ridiuculous to the sublime! Wheras yesterday was a nightmare of hidden bugs and (my) confusing code, today was fast and clear.
+I'll say to start with that I'm really fond of path finding algorithms - they're meaningful, interesting, fascinating and just generally fun to play with. This problem was therefore right in my comfort zone. I even spent the time re-using some of my grid code in a library, and writing it to use Elixir binaries for speed and neatness. As a result the code was really short (by my standards) and efficient. Both parts for me are running in ~2ms which is among my fastest days. Only minior hiccups were using the wrong day's data as input at first (d'oh) and then forgetting to convert from binary representation to a numerical digit.
+
+The second part flowed from the first, and when using a recrusive approach amounts to collecting the path as well as the end point. There's even no annoying uniqueness checks if you build paths such that every path found is unique!
+
+Overall, a really nice day to code up and play with. Also one that lends itself to visualizations - I may play if given time.
+
+I do pity the poor hikers who's only options are trails straight up to the tops of mountains - no easy flat ciruits!
 
 # Standard Phoenix README follows...
 
