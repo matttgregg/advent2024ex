@@ -231,6 +231,19 @@ Overall, a really nice day to code up and play with. Also one that lends itself 
 
 I do pity the poor hikers who's only options are trails straight up to the tops of mountains - no easy flat ciruits!
 
+# [Day 11](https://adventofcode.com/2024/day/11)
+
+Another really fun day! This one is mainly about caching data properly. Despite a lot of 'yay, brute force' on line for previous days, this
+feels the first day where *brute force* has actual meaning here. In this case the naive (brute force) approach of just generating the stone pattern fails completely. 
+
+After a while you recognise that these sorts of production rules tend to grow exponentially. AoC is very fond in that case of a *Part 1* at a level where you could probably just about do it brute force, and then *Part 2* is 'Oh, actually the elves want to run it for 5 times longer' - and suddenly it's practically impossibly to naively just create the whole list - both in terms of memory and time.
+
+So, on reading I just didn't bother doing an uncached version, and could run parts 1&2 off the same code. If you know the caching techniques it's not much extra work, and it's definitely a problem that needs it, even in part 1.
+
+My main excitement today was implementing my cache as an OTP Genserver - which was surprisingly painless. It was good practice, but it feels like once you've done a few iterations GenServer is a really easy pattern to follow. I *did* have a little diversion thinking about caching the list parts as well as the lengths reached - but it started getting fiddly, and I decided that just lengths was probably enough. I ran it with just lengths and it was completely fine.
+
+Maybe some smarter caching could squeeze out a bit more performance - my run is currently running around the 0.5s mark - but I'm not sure the payoff is worth it. (Just for kicks, I turned of caching to see what happened, and unsurprisingly my laptop ground to a halt.)
+
 # Standard Phoenix README follows...
 
 To start your Phoenix server:

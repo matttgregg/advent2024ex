@@ -17,7 +17,8 @@ defmodule Advent2024ex do
       7 => &Advent2024ex.Day7.run/0,
       8 => &Advent2024ex.Day8.run/0,
       9 => &Advent2024ex.Day9.run/0,
-      10 => &Advent2024ex.Day10.run/0
+      10 => &Advent2024ex.Day10.run/0,
+      11 => &Advent2024ex.Day11.run/0
     }
 
     all_start = Time.utc_now()
