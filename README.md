@@ -244,6 +244,21 @@ My main excitement today was implementing my cache as an OTP Genserver - which w
 
 Maybe some smarter caching could squeeze out a bit more performance - my run is currently running around the 0.5s mark - but I'm not sure the payoff is worth it. (Just for kicks, I turned of caching to see what happened, and unsurprisingly my laptop ground to a halt.)
 
+Update: Realised after that even for part 2, I still don't need to collect the paths. It's fun for debug/visualizations, but not a requirement given that they're all unique by construction.
+
+# [Day 12](https://adventofcode.com/2024/day/12)
+
+Moving from something heavily based on efficiency to something much more geometric. I always find it interesting how to apply what's essentially a path finding algorithm to a non-obvious space. In this case, finding connected sets, finding contiguous edges to an area.
+
+I'm glad that the problem included disjoint fields with the same tag - that makes things a lot more interesting. The edge finding in part two was interesting and non-trivial to implement. It was however pleasantly orthogonal - allowed the re-use of the area finding code, and full replacement of the costing function.
+
+For my part, despite enjoying the problem I managed to bury a rather stupid error. In my code for building walls, I built walls for each point in a field, keeping track of anything already seen in the field do that I don't double count. Unfortunately I failed to differentiate between the fact that I wanted to track additions to the current wall, and 'seen' things that I'd already considered from a different wall point. (I needed both because I wanted to know whether, for a particular direction, I could build a non-empty wall from a point that I hadn't seen before.) Easily spent half an hour in detailed debug tracking the different sets before I realised the problem, and then fixed to track these properly. However, once done th idea worked fine and two more stars were ticked off!
+
+A few other observations:
+* The `Grid` library I factored out earlier in the month was useful again, and saved a lot of tedious code.
+* Remembered to use reductions (folds)! (The Genserver yesterday was fun, but unnecessary.)
+* No real performance problems today, it's more a 'get the logic right' type of day.
+
 # Standard Phoenix README follows...
 
 To start your Phoenix server:
