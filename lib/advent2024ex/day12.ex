@@ -23,8 +23,6 @@ defmodule Advent2024ex.Day12 do
       true ->
         found
     end
-
-    # We've already been here.
   end
 
   defp perimeter_at(g, p, crop) do

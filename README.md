@@ -231,6 +231,8 @@ Overall, a really nice day to code up and play with. Also one that lends itself 
 
 I do pity the poor hikers who's only options are trails straight up to the tops of mountains - no easy flat ciruits!
 
+Update: Realised after that even for part 2, I still don't need to collect the paths. It's fun for debug/visualizations, but not a requirement given that they're all unique by construction.
+
 # [Day 11](https://adventofcode.com/2024/day/11)
 
 Another really fun day! This one is mainly about caching data properly. Despite a lot of 'yay, brute force' on line for previous days, this
@@ -244,8 +246,6 @@ My main excitement today was implementing my cache as an OTP Genserver - which w
 
 Maybe some smarter caching could squeeze out a bit more performance - my run is currently running around the 0.5s mark - but I'm not sure the payoff is worth it. (Just for kicks, I turned of caching to see what happened, and unsurprisingly my laptop ground to a halt.)
 
-Update: Realised after that even for part 2, I still don't need to collect the paths. It's fun for debug/visualizations, but not a requirement given that they're all unique by construction.
-
 # [Day 12](https://adventofcode.com/2024/day/12)
 
 Moving from something heavily based on efficiency to something much more geometric. I always find it interesting how to apply what's essentially a path finding algorithm to a non-obvious space. In this case, finding connected sets, finding contiguous edges to an area.
@@ -258,6 +258,16 @@ A few other observations:
 * The `Grid` library I factored out earlier in the month was useful again, and saved a lot of tedious code.
 * Remembered to use reductions (folds)! (The Genserver yesterday was fun, but unnecessary.)
 * No real performance problems today, it's more a 'get the logic right' type of day.
+
+# [Day 13](https://adventofcode.com/2024/day/13)
+
+This one was completely within my comfort zone, but I appreciate completely people who dislike leetcode problems (and leetcode programming interviews) for this sort of problem.
+
+It completely hinges on whether you're comfortable with solving simultaneous equations. If you *are* then it's likely you'll never even bother trying a brute force 'try lots of solutions' type approach - it's the sort of thing that **if you study maths** you'll do with paper and pencil and hardly even think of using a computer. If not... it's a lot more work to get there from scratch. Much like day 11, the first part was probably just about doable with a full search, but part 2 just pushes the numbers up and an analytic solution becomes essential.
+
+So, my case, because of my background I just solved analytically and the second part was trivial. Also reaped the benefit of Elixir having unbounded integers, so was trivial.
+
+I also enjoyed the callback to the hotel tiled floor - this was the last year that I completed fully, I remember the problem being a fun gamep-of-life type puzzle and getting upstairs to the hotel room being the end of the year!
 
 # Standard Phoenix README follows...
 
