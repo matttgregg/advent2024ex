@@ -269,6 +269,18 @@ So, my case, because of my background I just solved analytically and the second 
 
 I also enjoyed the callback to the hotel tiled floor - this was the last year that I completed fully, I remember the problem being a fun gamep-of-life type puzzle and getting upstairs to the hotel room being the end of the year!
 
+# [Day 14](https://adventofcode.com/2024/day/14)
+
+A lot of fun today! And very different part one and part two.
+
+For part one, this is really about just keeping track of things. Parse properly, check your robots are moving sensibly, do the quadrant calculations. As long as things are OK on the example files, this should be fine. No real tricks.
+
+The second part was a lot of fun. I really like the AoC puzzles which rely on some human pattern recognition, and there's always a bit of magic when something recognizable jumps out of random noise. I particularly enjoyed this year that it wasn't just a 'let it run and watch' situation - at least my answer was high enough that it would have been quite tedious. Instead there were a few repeating patterns that could be spotted, and then homing on on those you could work out when the pattern might finally resolve.
+
+It sounds clever, but in fact it was just noting that when I ran things up to 1000, the image looked a bit more structured somewhere around 75, 175, 275,... Investigating a bit more carefully I found the actually values and then an actual consistent repeat somewhere near 100. Just looking at those repeats filtered out 99% of the problem space! I also noticed a similar pattern around 30, 130, etc. so had a good feeling that when these collided I'd get the full image - which turned out true.
+
+So this was fun, it wasn't just doing maths, and it wasn't just doing computer science. It was developing enough tooling to investigate your problem space properly, which is a really satisfying task. One of my ffavourite days so far this year.
+
 # Standard Phoenix README follows...
 
 To start your Phoenix server:
