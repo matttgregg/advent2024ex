@@ -1,6 +1,10 @@
 defmodule Advent2024ex.Grid do
   def load_grid(fname) do
-    grid = File.read!(fname) |> String.trim() |> String.to_charlist()
+    File.read!(fname) |> from_text()
+  end
+
+  def from_text(text) do
+    grid = String.trim(text) |> String.to_charlist()
     # Work out the bounds
     # Because we trimmed, last line doesn't have a \n
     rows = Enum.count(grid, fn x -> x == ?\n end) + 1
@@ -11,6 +15,13 @@ defmodule Advent2024ex.Grid do
 
   def at11!({grid, _rows, cols}, {r, c}) do
     :binary.at(grid, (r - 1) * cols + c - 1)
+  end
+
+  def put11!({grid, rows, cols}, {r, c}, v) do
+    replace_at = (r - 1) * cols + c - 1
+    before_bin = :binary.part(grid, 0, replace_at)
+    after_bin = :binary.part(grid, replace_at + 1, rows * cols - replace_at - 1)
+    {"#{before_bin}#{[v]}#{after_bin}", rows, cols}
   end
 
   def at11({_grid, rows, cols} = g, {r, c} = p) do
@@ -41,5 +52,23 @@ defmodule Advent2024ex.Grid do
     for r <- 1..rows, c <- 1..cols do
       f.(g, {r, c})
     end
+  end
+
+  def find(g, char) do
+    {robot, _} =
+      each_coord(g, fn gr, coord -> {coord, at11!(gr, coord)} end)
+      |> Enum.find(fn {_, val} -> val == char end)
+
+    robot
+  end
+
+  def as_text({_grid, rows, cols} = g) do
+    for r <- 1..rows do
+      for c <- 1..cols do
+        "#{[at11(g, {r, c})]}"
+      end
+      |> Enum.join("")
+    end
+    |> Enum.join("\n")
   end
 end

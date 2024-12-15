@@ -279,7 +279,25 @@ The second part was a lot of fun. I really like the AoC puzzles which rely on so
 
 It sounds clever, but in fact it was just noting that when I ran things up to 1000, the image looked a bit more structured somewhere around 75, 175, 275,... Investigating a bit more carefully I found the actually values and then an actual consistent repeat somewhere near 100. Just looking at those repeats filtered out 99% of the problem space! I also noticed a similar pattern around 30, 130, etc. so had a good feeling that when these collided I'd get the full image - which turned out true.
 
-So this was fun, it wasn't just doing maths, and it wasn't just doing computer science. It was developing enough tooling to investigate your problem space properly, which is a really satisfying task. One of my ffavourite days so far this year.
+So this was fun, it wasn't just doing maths, and it wasn't just doing computer science. It was developing enough tooling to investigate your problem space properly, which is a really satisfying task. One of my favourite days so far this year.
+
+# [Day 15](https://adventofcode.com/2024/day/15)
+
+After some light and exploratory work yesterday, this one felt much more dense and hard work. It's a rather fun geometry, robot moving puzzle again, but this time the robot is affecting the environment (pushing boxes). Boxes can't go through walls, so the updates are non-trivial. There's quite a lot to track of - although maybe not as much as it seems?
+
+Why do I say that?
+
+Mainly because, having done both parts, there's a clearer pattern that could be implemented. My first part today did not naturally transfer to my second part, leading to quite a lot of messy reworking and duplication. I refactored some bits as I went, but also left quite a lot on the floor. So I think, if I coded this again from scratch, I could do this a lot more neatly.
+
+Essentially it can boil down to:
+* What boxes will the robot move? (Can do this with a recursive search from the robot.)
+* Can the robot move them? (Can check this during the search, by checking for walls.)
+* Do the move - work out all the new values from the map, clear the old positions, fill in the new positions. Done.
+* Do all this in a direction agnostic way.
+
+As it is, I've ended up with 'special' code paths depending on the day/direction, but these should all realised become common. It's not too bad. I'm not going to rush to fix as it's mainly cleanliness rather than execution performance at this point.
+
+Well over half way now, looking forward to seeing what comed next!
 
 # Standard Phoenix README follows...
 
